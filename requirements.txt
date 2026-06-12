@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+statsmodels
+lightgbm
+mlflow
+matplotlib
+openpyxl
+fastapi
+uvicorn
+python-multipart

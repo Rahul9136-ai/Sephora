@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+mlruns/
+mlflow.db
+data/processed/*.csv
+data/raw/backups/
+
+frontend/node_modules/
+frontend/dist/
+
+.claude/
