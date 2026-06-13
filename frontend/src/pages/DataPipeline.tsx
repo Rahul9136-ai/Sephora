@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api, type FilesStatus, type RetrainStatus } from '../lib/api'
+import SectionHeading from '../components/SectionHeading'
 
 function formatBytes(bytes?: number): string {
   if (bytes == null) return '—'
@@ -58,17 +59,17 @@ function UploadCard({
   )
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 flex flex-col gap-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div>
         <h3 className="font-semibold text-slate-900">{title}</h3>
         <p className="text-sm text-slate-500">{description}</p>
       </div>
 
-      <div className="text-xs text-slate-500 bg-slate-50 rounded-md px-3 py-2">
+      <div className="text-xs text-slate-500 bg-slate-50 rounded-lg px-3 py-2">
         <div>Current file: {info?.exists ? `${formatBytes(info.size_bytes)}, updated ${formatDate(info.modified_at)}` : 'not uploaded yet'}</div>
       </div>
 
-      <label className="flex items-center justify-center gap-2 rounded-md border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 cursor-pointer hover:border-indigo-400 hover:text-indigo-600 transition-colors">
+      <label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 cursor-pointer transition-colors hover:border-rose-400 hover:bg-rose-50/50 hover:text-rose-600">
         <input
           ref={inputRef}
           type="file"
@@ -83,8 +84,8 @@ function UploadCard({
         {busy ? 'Uploading…' : 'Click to choose an .xlsx file, or drag it here'}
       </label>
 
-      {message && <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">{message}</div>}
-      {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">{error}</div>}
+      {message && <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">{message}</div>}
+      {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
     </div>
   )
 }
@@ -139,7 +140,7 @@ export default function DataPipeline() {
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <h2 className="text-lg font-semibold text-slate-900 mb-3">1. Inject new data</h2>
+        <SectionHeading>1. Inject new data</SectionHeading>
         <p className="text-sm text-slate-500 mb-3">
           Uploading a file <strong>replaces</strong> the current source workbook (a timestamped backup is kept in{' '}
           <code className="bg-slate-100 px-1 rounded">data/raw/backups/</code>). Run a retrain afterwards to rebuild the
@@ -164,7 +165,7 @@ export default function DataPipeline() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold text-slate-900 mb-3">2. Retrain</h2>
+        <SectionHeading>2. Retrain</SectionHeading>
         <p className="text-sm text-slate-500 mb-3">
           Re-runs the full pipeline: ETL (contacts, orders &amp; events, master dataset) &rarr; benchmark every model x
           series (walk-forward backtest) &rarr; refit &amp; register the per-series champion in the MLflow Model
@@ -173,15 +174,15 @@ export default function DataPipeline() {
         <button
           onClick={startRetrain}
           disabled={isRunning}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-full bg-rose-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isRunning ? 'Retrain running…' : 'Run retrain'}
         </button>
 
-        {error && <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">{error}</div>}
+        {error && <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
 
         {status && status.status !== 'idle' && (
-          <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4">
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-slate-700">
                 Status: <span className="capitalize">{status.status}</span>
@@ -193,13 +194,13 @@ export default function DataPipeline() {
               {status.steps.map((step) => (
                 <li key={step.id} className="flex items-center gap-2 text-sm">
                   <span>{STEP_ICON[step.status]}</span>
-                  <span className={step.status === 'running' ? 'font-medium text-indigo-600' : 'text-slate-700'}>{step.label}</span>
+                  <span className={step.status === 'running' ? 'font-medium text-rose-600' : 'text-slate-700'}>{step.label}</span>
                 </li>
               ))}
             </ol>
 
             {status.error && (
-              <pre className="mt-3 whitespace-pre-wrap text-xs text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">{status.error}</pre>
+              <pre className="mt-3 whitespace-pre-wrap text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{status.error}</pre>
             )}
 
             {status.log.length > 0 && (
@@ -209,7 +210,7 @@ export default function DataPipeline() {
                   {status.log.map((entry) => (
                     <div key={entry.step}>
                       <div className="text-xs font-medium text-slate-600">{entry.label}</div>
-                      <pre className="whitespace-pre-wrap text-xs bg-slate-50 border border-slate-200 rounded-md px-3 py-2 max-h-64 overflow-auto">{entry.output}</pre>
+                      <pre className="whitespace-pre-wrap text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 max-h-64 overflow-auto">{entry.output}</pre>
                     </div>
                   ))}
                 </div>
@@ -220,23 +221,23 @@ export default function DataPipeline() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold text-slate-900 mb-3">Processed dataset files</h2>
-        <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+        <SectionHeading>Processed dataset files</SectionHeading>
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-slate-500">
+            <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
               <tr>
-                <th className="px-3 py-2 font-medium">File</th>
-                <th className="px-3 py-2 font-medium text-right">Size</th>
-                <th className="px-3 py-2 font-medium">Last updated</th>
+                <th className="px-4 py-3">File</th>
+                <th className="px-4 py-3 text-right">Size</th>
+                <th className="px-4 py-3">Last updated</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {files &&
                 Object.entries(files.processed).map(([name, info]) => (
                   <tr key={name}>
-                    <td className="px-3 py-2 font-mono text-xs text-slate-700">{name}</td>
-                    <td className="px-3 py-2 text-right">{formatBytes(info.size_bytes)}</td>
-                    <td className="px-3 py-2 text-slate-500">{formatDate(info.modified_at)}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-slate-700">{name}</td>
+                    <td className="px-4 py-2.5 text-right">{formatBytes(info.size_bytes)}</td>
+                    <td className="px-4 py-2.5 text-slate-500">{formatDate(info.modified_at)}</td>
                   </tr>
                 ))}
             </tbody>
