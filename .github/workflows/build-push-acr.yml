@@ -1,0 +1,27 @@
+name: Build and push image to ACR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_ACR_PUSH_CREDENTIALS }}
+
+      - name: Log in to ACR
+        run: az acr login --name acrsaphtino9ycik2
+
+      - name: Build and push image
+        run: |
+          docker build -t acrsaphtino9ycik2.azurecr.io/saphtino-api:${{ github.sha }} -t acrsaphtino9ycik2.azurecr.io/saphtino-api:latest .
+          docker push acrsaphtino9ycik2.azurecr.io/saphtino-api:${{ github.sha }}
+          docker push acrsaphtino9ycik2.azurecr.io/saphtino-api:latest
