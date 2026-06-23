@@ -10,27 +10,12 @@ import {
   YAxis,
 } from 'recharts'
 import { api, type BenchmarkRow, type ForecastRow, type HistoryPoint, type RegistryEntry, type SeriesSummary } from '../lib/api'
+import { downloadCSV } from '../lib/csv'
 import SectionHeading from '../components/SectionHeading'
 
 function StatusBanner({ message, kind }: { message: string; kind: 'error' | 'info' }) {
   const cls = kind === 'error' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200'
   return <div className={`rounded-xl border px-4 py-3 text-sm shadow-sm ${cls}`}>{message}</div>
-}
-
-function downloadCSV(filename: string, rows: ForecastRow[]) {
-  if (rows.length === 0) return
-  const headers = Object.keys(rows[0]) as (keyof ForecastRow)[]
-  const lines = [
-    headers.join(','),
-    ...rows.map((row) => headers.map((h) => String(row[h])).join(',')),
-  ]
-  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
 }
 
 function DownloadButton({ label, onClick }: { label: string; onClick: () => void }) {

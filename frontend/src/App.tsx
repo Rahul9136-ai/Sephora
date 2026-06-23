@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import DataPipeline from './pages/DataPipeline'
+import Planning from './pages/Planning'
 
 function App() {
   const [logoFailed, setLogoFailed] = useState(false)
@@ -36,6 +37,9 @@ function App() {
             <NavLink to="/" className={navClass} end>
               Dashboard
             </NavLink>
+            <NavLink to="/planning" className={navClass}>
+              Planning
+            </NavLink>
             <NavLink to="/data" className={navClass}>
               Data &amp; Retrain
             </NavLink>
@@ -46,6 +50,7 @@ function App() {
       <main className="mx-auto max-w-6xl px-6 py-8">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/planning" element={<Planning />} />
           <Route path="/data" element={<DataPipeline />} />
         </Routes>
       </main>
